@@ -1,0 +1,10 @@
+.vscode/**
+node_modules/**
+src/**
+test/**
+out/**/*.map
+**/*.ts
+!out/**/*.js
+tsconfig.json
+.gitignore
+fix_regex.py
