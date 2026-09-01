@@ -1,0 +1,135 @@
+{
+  "name": "sql-column-hints",
+  "displayName": "SQL Column Hints",
+  "description": "Shows column names inline next to INSERT values, like named-parameter hints in a function call.",
+  "version": "0.2.0",
+  "publisher": "local",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Other"
+  ],
+  "keywords": [
+    "sql",
+    "inlay hints",
+    "insert",
+    "mysql",
+    "column names"
+  ],
+  "activationEvents": [
+    "onLanguage:sql",
+    "onLanguage:mysql",
+    "onLanguage:postgres",
+    "onLanguage:plaintext"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "sqlColumnHints.toggle",
+        "title": "SQL Column Hints: Toggle Inline Column Names"
+      },
+      {
+        "command": "sqlColumnHints.showAllHints",
+        "title": "SQL Column Hints: Show All Hints (lift the editor's per-line hint limit)"
+      }
+    ],
+    "configuration": {
+      "title": "SQL Column Hints",
+      "properties": {
+        "sqlColumnHints.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show column-name inlay hints next to INSERT values."
+        },
+        "sqlColumnHints.languages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "sql",
+            "mysql",
+            "postgres",
+            "pgsql",
+            "sqlite",
+            "jinja-sql"
+          ],
+          "description": "Language IDs to attach the hint provider to. Reload the window after changing."
+        },
+        "sqlColumnHints.hintPosition": {
+          "type": "string",
+          "enum": [
+            "before",
+            "after"
+          ],
+          "default": "before",
+          "enumDescriptions": [
+            "Render as `id: '93'` before the value.",
+            "Render as `'93' :id` after the value."
+          ],
+          "description": "Where to place the column name relative to the value."
+        },
+        "sqlColumnHints.maxColumnNameLength": {
+          "type": "number",
+          "default": 32,
+          "minimum": 4,
+          "description": "Column names longer than this are truncated with an ellipsis in the hint."
+        },
+        "sqlColumnHints.maxRowsPerStatement": {
+          "type": "number",
+          "default": 500,
+          "minimum": 1,
+          "description": "Safety limit: only the first N value rows of a statement get hints (large dump files)."
+        },
+        "sqlColumnHints.maxFileSizeKB": {
+          "type": "number",
+          "default": 4096,
+          "description": "Skip files larger than this (in KB) to keep the editor responsive."
+        },
+        "sqlColumnHints.skipHintsForRowsInsideSelection": {
+          "type": "boolean",
+          "default": false,
+          "description": "Hide hints on the row the cursor is in, so editing is not visually shifted."
+        },
+        "sqlColumnHints.warnAboutEditorHintLimit": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Offer to raise `#editor.inlayHints.maximumLength#` when VS Code's per-line hint budget (default 43 characters) is hiding the last column names on wide INSERT rows."
+        },
+        "sqlColumnHints.diagnostics.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Report a problem when a value row's item count does not match the column list count."
+        },
+        "sqlColumnHints.diagnostics.severity": {
+          "type": "string",
+          "enum": [
+            "error",
+            "warning",
+            "information",
+            "hint"
+          ],
+          "default": "warning",
+          "description": "Severity used for column/value count mismatches."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run compile",
+    "test": "npm run compile && node test/parser.test.js && node test/extension.smoke.js",
+    "test:parser": "node test/parser.test.js",
+    "test:extension": "node test/extension.smoke.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.75.0",
+    "typescript": "^5.4.5"
+  }
+}
